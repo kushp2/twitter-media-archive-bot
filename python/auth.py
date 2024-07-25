@@ -2,6 +2,7 @@ import tweepy
 import os
 from dotenv import load_dotenv
 
+
 # Loads environment variables
 load_dotenv()
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
