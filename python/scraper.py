@@ -14,14 +14,16 @@ import pickle
 import os
 from dotenv import load_dotenv
 import os.path
+from database import insert_tweet, create_table
 
 # Twitter login credentials
 load_dotenv()
 username_str = os.getenv('TWITTER_USERNAME')
 password_str = os.getenv('TWITTER_PASSWORD')
 
+
 def scrape_tweets (scraped_account):
-    """Scrapes an account for its tweets and catelogs them"""
+    """Scrapes an account for its tweets and saves them to a database"""
     # Set up Chrome options
     options = Options()
     options.add_argument("--start-maximized")
@@ -36,6 +38,9 @@ def scrape_tweets (scraped_account):
     # Open Twitter login page
     url = "https://x.com/i/flow/login"
     driver.get(url)
+
+    # Creates a table for the tweets if not made already
+    create_table()
 
     # Login
     try:
@@ -89,7 +94,8 @@ def scrape_tweets (scraped_account):
         with open(scroll_state_file, "wb") as f:
             pickle.dump((scroll_count, last_height, tweets_collected, tweets_data), f)
 
-    while True:  # Infinite loop for continuous scrolling
+    # Infinite loop for continuous scrolling
+    while True:
         try:
             tweets = driver.find_elements(By.CSS_SELECTOR, 'article[data-testid="tweet"]')
 
@@ -99,7 +105,6 @@ def scrape_tweets (scraped_account):
                     tweet_text = tweet.find_element(By.CSS_SELECTOR, 'div[lang]').text
                 except NoSuchElementException:
                     tweet_text = ""
-                    print("No tweet text found")
 
                 # Gets tweet date and time
                 try:
@@ -126,6 +131,8 @@ def scrape_tweets (scraped_account):
                     tweets_data.append((tweet_text, tweet_date, images_links))
                     print(f"Date: {tweet_date}, Tweet: {tweet_text}, Images: {images_links}")
 
+                    #inserts into the db
+                    insert_tweet(tweet_text, tweet_date, images_links)
 
             # Scroll down
             driver.execute_script("window.scrollBy(0, 3000);")
@@ -162,17 +169,18 @@ def scrape_tweets (scraped_account):
             print(f"An error occurred during scraping: {e}")
             break
 
-    # Close the browser
+    # Close the browser and db connection
     driver.quit()
+    close_connection()
 
-    # Create a DataFrame and save it to an Excel file
-    # df = pd.DataFrame(tweets_data, columns=["Tweet", "Date", "Link", "Images"])
-    # df.to_excel("tweets2.xlsx", index=False)
-    output_dir = os.path.join(os.getcwd(), "../tweet_data")
-    os.makedirs(output_dir, exist_ok=True)
-    output_file = os.path.join(output_dir, "tweets2.xlsx")
-    df = pd.DataFrame(tweets_data, columns=["Tweet", "Date", "Images"])
-    df.to_excel(output_file, index=False)
+    ###                               ###
+    ###   Saves data to an xl sheet   ###
+    ###                               ###
+    # output_dir = os.path.join(os.getcwd(), "../tweet_data")
+    # os.makedirs(output_dir, exist_ok=True)
+    # output_file = os.path.join(output_dir, "tweets.xlsx")
+    # df = pd.DataFrame(tweets_data, columns=["Tweet", "Date", "Images"])
+    # df.to_excel(output_file, index=False)
 
     # Print the total number of tweets collected
     print(f"Total tweets collected: {len(tweets_data)}")

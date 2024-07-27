@@ -1,11 +1,12 @@
 import os
+from dotenv import load_dotenv
 import requests
-from bs4 import BeautifulSoup
 from auth import get_twitter_conn_v1, get_twitter_conn_v2
 from scraper import scrape_tweets
 
 # Variables
-scraped_account = os.getenv('ARCHIVED_USERNAME')                    #holds the username of the account to archive
+archived_username = os.getenv('ARCHIVED_USERNAME')                    #holds the username of the account to archive
+full_scrape = os.getenv('FULL_SCRAPE')                                #holds if the user wants to start a full archive                                            
 
 # Authenticate to Twitter
 client_v1 = get_twitter_conn_v1()
@@ -25,13 +26,19 @@ def upload_image(path):
         print("Error - Uploading Media")
         
 
-
 if __name__ == '__main__':
-    # print("Would you like to archive a new account? (yes or no)")
-    # print("Would you like to start continuous archival? (yes or no)")
-    # print("Enter the account name you want to archive:")
 
-    scrape_tweets(scraped_account)
+    #if the environment variable is set to scrape
+    if full_scrape == "true":
+        scrape_tweets(archived_username)
+    else:
+        print("No full archive requested.")
+    
+    
+    print("Starting continuous archival.")
+
+
+
 
 
 
