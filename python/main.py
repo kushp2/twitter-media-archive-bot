@@ -30,12 +30,13 @@ if __name__ == '__main__':
 
     #if the environment variable is set to scrape
     if full_scrape == "true":
+        print("Saving tweets to the database.")
         scrape_tweets(archived_username)
     else:
         print("No full archive requested.")
     
     
-    print("Starting continuous archival.")
+    #print("Starting continuous archival.")
 
 
 

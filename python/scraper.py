@@ -14,7 +14,7 @@ import pickle
 import os
 from dotenv import load_dotenv
 import os.path
-from database import insert_tweet, create_table
+from database import insert_tweet, create_table, close_connection
 
 # Twitter login credentials
 load_dotenv()
