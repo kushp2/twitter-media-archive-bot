@@ -31,5 +31,4 @@ def get_twitter_conn_v2() -> tweepy.Client:
         access_token=ACCESS_TOKEN,
         access_token_secret=ACCESS_TOKEN_SECRET,
     )
-
     return client

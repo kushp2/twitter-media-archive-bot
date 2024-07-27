@@ -1,4 +1,7 @@
+#environment
 venv/
 .env
 
 python/__pycache__
+python/scroll_state.pkl
+tweet_data/*
