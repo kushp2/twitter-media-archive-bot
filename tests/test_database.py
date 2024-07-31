@@ -1,4 +1,4 @@
-import pypyodbc as odbcv
+import pypyodbc as odbc
 import pandas as pd
 import os
 from dotenv import load_dotenv
@@ -10,7 +10,7 @@ database = os.getenv('DB_NAME')
 username = os.getenv('DB_USERNAME')
 password = os.getenv('DB_PASSWORD')
 connection_string = 'Driver={ODBC Driver 18 for SQL Server};Server='+ server +';Database='+ database +';Uid='+ username +';Pwd='+ password +';Encrypt=yes;TrustServerCertificate=no;Connection Timeout=60;'
-conn = odbcv.connect(connection_string)
+conn = odbc.connect(connection_string)
 
 create_table_sql = '''
 CREATE TABLE tweets (
