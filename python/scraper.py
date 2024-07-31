@@ -65,7 +65,7 @@ def scrape_tweets (scraped_account):
         exit()
 
     # Scroll the page to load more tweets
-    scroll_pause_time = 2  
+    scroll_pause_time = 20  
     new_height = 0
     last_height = driver.execute_script("return window.pageYOffset;")
     scrolling = True
